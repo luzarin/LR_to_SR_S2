@@ -30,7 +30,11 @@
         <!-- Header -->
         <div class="text-center mb-8">
             <h1 class="text-4xl font-semibold mb-2">SEN2SRLite</h1>
-            <p class="text-gray-600">Super-Resolución de Imágenes GeoTIFF</p>
+            <p class="text-gray-600">Interfaz para transformar imágenes Sentinel-2 (10 bandas) de 10m de resolución a 2.5 metros de resolución.
+            <br>
+            Seleccionar Archivo Input y Device Mode (Según GPU o CPU) y Ejecutar!
+
+            </p>
         </div>
 
         <!-- Main Container Card -->
@@ -41,13 +45,7 @@
                 <!-- Columna Izquierda -->
                 <div class="space-y-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Weights Directory</label>
-                        <input type="text" id="weights_dir" value="./SEN2SRLite"
-                            class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Input Folder</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Carpeta Input</label>
                         <div class="flex gap-2">
                             <input type="text" id="input_dir" value="./input_10bands_LR"
                                 class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
@@ -59,12 +57,15 @@
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Input Filename (<span
-                                id="file_count">0</span>)</label>
-                        <select id="in_tif" onchange="updateOutName()"
-                            class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white">
-                            <option value="">Cargando...</option>
-                        </select>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Carpeta Output</label>
+                        <input type="text" id="output_dir" value="./output_10bands_SR"
+                            class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Weights Directory</label>
+                        <input type="text" id="weights_dir" value="./SEN2SRLite"
+                            class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
                     </div>
 
                     <div>
@@ -85,13 +86,15 @@
                 <!-- Columna Derecha -->
                 <div class="space-y-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Output Folder</label>
-                        <input type="text" id="output_dir" value="./output_10bands_SR"
-                            class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Archivo Input</label>
+                        <select id="in_tif" onchange="updateOutName()"
+                            class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white">
+                            <option value="">Cargando...</option>
+                        </select>
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Output Filename</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Archivo Output</label>
                         <input type="text" id="out_name"
                             class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
                     </div>
@@ -125,7 +128,7 @@
             <div class="flex gap-3 mb-6">
                 <button id="btn_run" onclick="runPipeline()"
                     class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-md font-medium transition shadow-sm flex items-center justify-center gap-2 flex-grow sm:flex-grow-0 sm:w-40">
-                    <i data-lucide="play" class="w-4 h-4"></i> Run
+                    <i data-lucide="play" class="w-4 h-4"></i> Ejecutar
                 </button>
                 <button id="btn_cancel" onclick="cancelPipeline()"
                     class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-5 py-2.5 rounded-md font-medium transition shadow-sm hidden flex items-center justify-center gap-2">
@@ -203,8 +206,6 @@
         async function loadTifs() {
             const folder = document.getElementById('input_dir').value;
             const select = document.getElementById('in_tif');
-            const countSpan = document.getElementById('file_count');
-
             select.innerHTML = '<option>Loading...</option>';
             logToTerminal(`Leyendo directorio: ${folder}...`);
 
@@ -220,12 +221,10 @@
                         opt.textContent = f;
                         select.appendChild(opt);
                     });
-                    countSpan.textContent = data.files.length;
                     logToTerminal(`Encontrados ${data.files.length} archivos TIFF.`);
                     updateOutName();
                 } else {
                     select.innerHTML = '<option value="">Sin archivos .tif</option>';
-                    countSpan.textContent = "0";
                     logToTerminal("No se encontraron archivos en la carpeta.", "error");
                 }
             } catch (error) {
