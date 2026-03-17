@@ -35,5 +35,9 @@ python -c "import torch; print(torch.__version__); print('cuda?', torch.cuda.is_
 
 ```powershell
 # 7. Correr la app
-uv run python -m uvicorn app:app --reload --port 8010
+# Estándar general
+# uv run uvicorn app:app --reload --host 127.0.0.1 --port 8010
+
+# Windows/PowerShell (workaround por bug de uv trampoline)
+uv run python -m uvicorn app:app --reload --host 127.0.0.1 --port 8010
 ```

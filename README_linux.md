@@ -33,5 +33,5 @@ python -c "import torch; print(torch.__version__); print('cuda?', torch.cuda.is_
 
 ```bash
 # 6. Correr la app
-uvicorn app:app --reload
+uv run uvicorn app:app --reload --host 127.0.0.1 --port 8010
 ```
