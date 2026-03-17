@@ -1,4 +1,4 @@
-# Low-Res to High Res Sentinel-2 (Linux / WSL2)
+# Low-Res to High-Res Sentinel-2 (Linux / WSL2)
 
 Herramienta web para mejorar la resolución espacial de imágenes satelitales Sentinel-2 de Low-Res (10m) a Super-Res (2.5m), con salida GeoTIFF de 10 bandas.
 
