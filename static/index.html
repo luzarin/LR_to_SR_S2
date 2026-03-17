@@ -6,20 +6,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SEN2SRLite - Super-Resolución</title>
     <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        body {
-            background-color: #f0fdfa;
-            /* light teal background similar to the image vibe */
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            color: #1e293b;
+        :root {
+            --bg: #f4f8fb;
+            --card: #ffffff;
+            --ink: #111827;
+            --line: #d1d5db;
+            --primary: #1a2b6b;
+            --primary-hover: #111d4e;
+            --primary-soft: #dce4f5;
+            --primary-soft-hover: #c3d0ee;
+            --terminal: #1e293b;
         }
 
-        .main-card {
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
-            border-radius: 12px;
+        body {
+            background: radial-gradient(1200px 600px at 50% -200px, #ffffff 5%, var(--bg) 70%);
+            font-family: "Inter", "Segoe UI", Arial, sans-serif;
+            color: var(--ink);
+        }
+
+        .soft-input {
+            border-color: #d1d5db !important;
+            border-radius: 0.5rem !important;
+            background: #fff !important;
+            font-size: 0.95rem !important;
+            box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03) !important;
+        }
+
+        .soft-input:focus {
+            border-color: #6366f1 !important;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2) !important;
         }
     </style>
 </head>
@@ -29,56 +48,52 @@
     <div class="max-w-4xl mx-auto">
         <!-- Header -->
         <div class="text-center mb-8">
-            <h1 class="text-4xl font-semibold mb-2">SEN2SRLite</h1>
-            <p class="text-gray-600">Interfaz para transformar imágenes Sentinel-2 (10 bandas) de 10m de resolución a 2.5 metros de resolución.
-            <br>
-            Seleccionar Archivo Input y Device Mode (Según GPU o CPU) y Ejecutar!
-
-            </p>
+            <h1 class="text-5xl tracking-tight font-normal text-slate-900">Low-Res to High-Res Sentinel-2<br>Super-Resolution (SEN2SRLite)</h1>
+            <p class="mt-3 text-slate-700 text-xl">Este flujo aumenta la resolucion de Sentinel-2 para generar salidas super-resueltas a 2.5 m.</p>
         </div>
 
         <!-- Main Container Card -->
-        <div class="bg-white p-8 main-card border border-gray-100">
-            <h2 class="text-xl font-medium mb-6 text-gray-800 border-b pb-2">Configuración</h2>
+        <div class="bg-white border border-slate-200 rounded-2xl shadow-sm p-7 space-y-5">
+            <h2 class="text-2xl font-medium text-slate-900">Configuracion</h2>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Columna Izquierda -->
                 <div class="space-y-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Carpeta Input</label>
+                        <label class="block text-sm font-medium text-slate-800 mb-1.5">Carpeta Input</label>
                         <div class="flex gap-2">
                             <input type="text" id="input_dir" value="./input_10bands_LR"
-                                class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                class="soft-input w-full">
                             <button type="button" onclick="loadTifs()"
-                                class="bg-indigo-50 text-indigo-600 px-3 py-2 rounded-md hover:bg-indigo-100 transition shadow-sm border border-indigo-200">
+                                class="px-3 py-2 rounded-lg bg-[var(--primary-soft)] text-[#1a2b6b] hover:bg-[var(--primary-soft-hover)] transition-colors shadow-sm border border-slate-200">
                                 <i data-lucide="refresh-cw" class="w-4 h-4"></i>
                             </button>
                         </div>
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Carpeta Output</label>
+                        <label class="block text-sm font-medium text-slate-800 mb-1.5">Carpeta Output</label>
                         <input type="text" id="output_dir" value="./output_10bands_SR"
-                            class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            class="soft-input w-full">
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Weights Directory</label>
+                        <label class="block text-sm font-medium text-slate-800 mb-1.5">Weights Directory</label>
                         <input type="text" id="weights_dir" value="./SEN2SRLite"
-                            class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            class="soft-input w-full">
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Device Mode</label>
+                        <label class="block text-sm font-medium text-slate-800 mb-1.5">Device Mode</label>
                         <div class="flex items-center gap-2">
                             <select id="device_mode"
-                                class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white">
+                                class="soft-input w-full bg-white">
                                 <option value="auto">Auto</option>
                                 <option value="cuda">CUDA (GPU)</option>
                                 <option value="cpu">CPU</option>
                             </select>
                             <span id="gpu_badge"
-                                class="px-2 py-1 bg-gray-100 text-gray-600 rounded text-xs whitespace-nowrap hidden border border-gray-200"></span>
+                                class="inline-flex rounded-md border px-2.5 py-1 text-xs font-medium border-slate-300 bg-slate-50 text-slate-700 whitespace-nowrap hidden"></span>
                         </div>
                     </div>
                 </div>
@@ -86,83 +101,85 @@
                 <!-- Columna Derecha -->
                 <div class="space-y-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Archivo Input</label>
+                        <label class="block text-sm font-medium text-slate-800 mb-1.5">Archivo Input</label>
                         <select id="in_tif" onchange="updateOutName()"
-                            class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white">
+                            class="soft-input w-full bg-white">
                             <option value="">Cargando...</option>
                         </select>
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Archivo Output</label>
+                        <label class="block text-sm font-medium text-slate-800 mb-1.5">Archivo Output</label>
                         <input type="text" id="out_name"
-                            class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            class="soft-input w-full">
                     </div>
 
                     <div class="grid grid-cols-2 gap-4 mt-2">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Factor</label>
+                            <label class="block text-sm font-medium text-slate-800 mb-1.5">Factor</label>
                             <input type="number" id="factor" value="4" min="1" max="8"
-                                class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                class="soft-input w-full">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Patch Size</label>
+                            <label class="block text-sm font-medium text-slate-800 mb-1.5">Patch Size</label>
                             <input type="number" id="patch" value="128" step="16"
-                                class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                class="soft-input w-full">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Padding</label>
+                            <label class="block text-sm font-medium text-slate-800 mb-1.5">Padding</label>
                             <input type="number" id="pad" value="4" min="0" max="64"
-                                class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                class="soft-input w-full">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Batch Size</label>
+                            <label class="block text-sm font-medium text-slate-800 mb-1.5">Batch Size</label>
                             <input type="number" id="batch" value="7" min="1" max="64"
-                                class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                class="soft-input w-full">
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Acciones -->
-            <div class="flex gap-3 mb-6">
+            <div class="flex items-center gap-3 pt-1">
                 <button id="btn_run" onclick="runPipeline()"
-                    class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-md font-medium transition shadow-sm flex items-center justify-center gap-2 flex-grow sm:flex-grow-0 sm:w-40">
+                    class="inline-flex justify-center min-w-[108px] px-5 py-2.5 rounded-lg bg-[var(--primary)] text-white text-sm font-medium hover:bg-[var(--primary-hover)] transition-colors shadow-sm items-center gap-2">
                     <i data-lucide="play" class="w-4 h-4"></i> Ejecutar
                 </button>
                 <button id="btn_cancel" onclick="cancelPipeline()"
-                    class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-5 py-2.5 rounded-md font-medium transition shadow-sm hidden flex items-center justify-center gap-2">
-                    <i data-lucide="x" class="w-4 h-4"></i> Cancel
+                    class="inline-flex justify-center min-w-[108px] px-5 py-2.5 rounded-lg bg-[var(--primary-soft)] text-[#1a2b6b] text-sm font-medium hover:bg-[var(--primary-soft-hover)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed items-center gap-2"
+                    disabled>
+                    <i data-lucide="x" class="w-4 h-4"></i> Cancelar
                 </button>
             </div>
 
             <!-- Progreso y Terminal -->
-            <div id="progress_container" class="space-y-3 mb-4 hidden">
-                <div class="flex justify-between text-sm font-medium text-gray-600 mb-1">
+            <div id="progress_container" class="space-y-2">
+                <div class="flex justify-between text-sm font-medium text-slate-800">
                     <span>Progreso</span>
                     <span id="progress_pct">0%</span>
                 </div>
-                <div class="w-full bg-gray-200 rounded-full h-2.5">
-                    <div id="progress_bar" class="bg-teal-500 h-2.5 rounded-full transition-all duration-300"
-                        style="width: 0%"></div>
+                <div class="w-full h-2.5 bg-slate-200 rounded-full overflow-hidden">
+                    <div id="progress_bar" class="h-2.5 w-0 rounded-full transition-all duration-500 bg-gradient-to-r from-[#1a2b6b] to-[#4a7ab5]"></div>
                 </div>
 
                 <!-- Badges -->
-                <div class="flex gap-2">
+                <div class="pt-1">
                     <span id="status_badge"
-                        class="px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-medium border border-green-200">status:
-                        idle</span>
+                        class="inline-flex rounded-md border px-2.5 py-1 text-xs font-medium border-slate-300 bg-slate-50 text-slate-700">estado:
+                        inactivo</span>
                 </div>
             </div>
 
             <!-- Terminal Log -->
-            <div class="bg-gray-900 rounded-md p-4 mt-2 relative">
+            <div class="border-t border-slate-200 pt-4">
+                <div class="bg-[var(--terminal)] rounded-lg p-4 relative">
                 <button onclick="clearLogs()" class="absolute top-2 right-2 text-gray-400 hover:text-white transition"
                     title="Clear logs">
                     <i data-lucide="trash-2" class="w-4 h-4"></i>
                 </button>
-                <div id="terminal" class="h-32 overflow-y-auto text-gray-300 font-mono text-xs space-y-1">
+                <div id="terminal" class="h-20 overflow-y-auto text-[#a7f3d0] font-mono text-xs space-y-1 whitespace-pre-wrap break-all">
                     <div class="text-gray-500">> Ready</div>
+                </div>
                 </div>
             </div>
         </div>
@@ -172,6 +189,26 @@
         lucide.createIcons();
 
         let eventSource = null;
+        const statusEs = {
+            idle: "inactivo",
+            starting: "iniciando",
+            running: "ejecutando",
+            completed: "completado",
+            cancelled: "cancelado",
+            error: "error",
+            "connection-lost": "conexion perdida",
+        };
+
+        function setStatus(status, className = "") {
+            const badge = document.getElementById("status_badge");
+            badge.textContent = `estado: ${statusEs[status] || status}`;
+            const base = "inline-flex rounded-md border px-2.5 py-1 text-xs font-medium";
+            if (!className) {
+                badge.className = `${base} border-slate-300 bg-slate-50 text-slate-700`;
+                return;
+            }
+            badge.className = `${base} ${className}`;
+        }
 
         function logToTerminal(msg, type = "normal") {
             const term = document.getElementById("terminal");
@@ -253,8 +290,8 @@
         }
 
         function resetButtons() {
-            document.getElementById("btn_run").classList.remove("hidden");
-            document.getElementById("btn_cancel").classList.add("hidden");
+            document.getElementById("btn_run").disabled = false;
+            document.getElementById("btn_cancel").disabled = true;
         }
 
         function runPipeline() {
@@ -280,13 +317,11 @@
             const in_tif_path = input_dir.replace(/\/$/, '') + '/' + in_tif_name;
 
             // Limpiar UI state
-            document.getElementById("btn_run").classList.add("hidden");
-            document.getElementById("btn_cancel").classList.remove("hidden");
-            document.getElementById("progress_container").classList.remove("hidden");
+            document.getElementById("btn_run").disabled = true;
+            document.getElementById("btn_cancel").disabled = false;
             document.getElementById("progress_bar").style.width = "0%";
             document.getElementById("progress_pct").textContent = "0%";
-            document.getElementById("status_badge").textContent = "status: starting";
-            document.getElementById("status_badge").className = "px-2 py-1 bg-yellow-100 text-yellow-800 rounded text-xs font-medium border border-yellow-200";
+            setStatus("starting", "border-amber-300 bg-amber-100 text-amber-800");
 
             clearLogs();
             logToTerminal("Iniciando reconstrucción super-resolución...");
@@ -315,8 +350,7 @@
 
                 if (data.error) {
                     logToTerminal("Error: " + data.error, "error");
-                    document.getElementById("status_badge").textContent = "status: error";
-                    document.getElementById("status_badge").className = "px-2 py-1 bg-red-100 text-red-800 rounded text-xs font-medium border border-red-200";
+                    setStatus("error", "border-red-300 bg-red-100 text-red-800");
                     eventSource.close();
                     resetButtons();
                     return;
@@ -335,14 +369,12 @@
                     const pct = data.progress.toFixed(1);
                     document.getElementById("progress_bar").style.width = pct + "%";
                     document.getElementById("progress_pct").textContent = pct + "%";
-                    document.getElementById("status_badge").textContent = "status: running";
-                    document.getElementById("status_badge").className = "px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs font-medium border border-blue-200";
+                    setStatus("running", "border-blue-300 bg-blue-100 text-blue-800");
                 }
 
                 if (data.stage) {
                     if (data.stage === "completed") {
-                        document.getElementById("status_badge").textContent = "status: completed";
-                        document.getElementById("status_badge").className = "px-2 py-1 bg-green-100 text-green-800 rounded text-xs font-medium border border-green-200";
+                        setStatus("completed", "border-emerald-300 bg-emerald-100 text-emerald-800");
                         document.getElementById("progress_bar").style.width = "100%";
                         document.getElementById("progress_pct").textContent = "100%";
                         eventSource.close();
@@ -354,8 +386,7 @@
 
             eventSource.onerror = function (e) {
                 logToTerminal("Se perdió la conexión con el servidor.", "error");
-                document.getElementById("status_badge").textContent = "status: connection lost";
-                document.getElementById("status_badge").className = "px-2 py-1 bg-red-100 text-red-800 rounded text-xs font-medium border border-red-200";
+                setStatus("connection-lost", "border-red-300 bg-red-100 text-red-800");
                 eventSource.close();
                 resetButtons();
             };
