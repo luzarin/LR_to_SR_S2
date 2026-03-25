@@ -1,13 +1,19 @@
 # Low-Res to High-Res Sentinel-2 (Windows PowerShell)
 
-Herramienta web para mejorar la resolución espacial de imágenes satelitales Sentinel-2 de Low-Res (10m) a Super-Res (2.5m), con salida GeoTIFF de 10 bandas.
+Herramienta web para mejorar la resolución espacial de imágenes satelitales Sentinel-2 de Low-Res (10m) a Super-Res (2.5m).
+
+## Modelos
+
+- `./SEN2SRLite`: pipeline de 10 bandas (B02, B03, B04, B05, B06, B07, B08, B8A, B11, B12).
+- `./ldsr-s2`: pipeline RGB+NIR (B04, B03, B02, B08), salida de 4 bandas.
+- En la UI se elige desde el toggle de **Weights Directory**.
 
 ## Entrada y salida
 
 | Tipo | Formato | Notas |
 |---|---|---|
-| **Input** | GeoTIFF multibanda | Debe tener 10 bandas (B02, B03, B04, B05, B06, B07, B08, B8A, B11, B12) |
-| **Output** | GeoTIFF multibanda | Mantiene metadata y descripciones de bandas |
+| **Input** | GeoTIFF multibanda | SEN2SRLite espera 10 bandas. LDSR-S2 usa RGB+NIR (si hay más bandas, toma automáticamente B04/B03/B02/B08). |
+| **Output** | GeoTIFF multibanda | SEN2SRLite entrega 10 bandas. LDSR-S2 entrega 4 bandas. |
 
 ## Requisitos
 
@@ -28,7 +34,7 @@ uv python install 3.11.9
 
 # 3. Clonar el repositorio
 git clone https://github.com/luzarin/LR_to_SR_S2.git
-cd LR_to_SR_S2  
+cd LR_to_SR_S2
 
 # 4. Crear y activar entorno virtual
 uv venv --python 3.11.9 .venv
@@ -56,12 +62,13 @@ Abrir en el navegador: [http://127.0.0.1:8010](http://127.0.0.1:8010)
 
 ### Flujo básico
 
-1. Colocar los GeoTIFF de 10 bandas en `input_10bands_LR/`.
+1. Colocar los GeoTIFF en `input_10bands_LR/`.
 2. Abrir la UI y refrescar la lista de archivos.
-3. Elegir `Device Mode` (`auto`, `cuda` o `cpu`).
-4. Ajustar parámetros (`factor`, `patch`, `pad`, `batch`) si hace falta.
-5. Ejecutar el proceso y revisar el progreso en tiempo real.
-6. El resultado se guarda en `output_10bands_SR/`.
+3. Elegir el modelo en `Weights Directory` (`./SEN2SRLite` o `./ldsr-s2`).
+4. Elegir `Device Mode` (`auto`, `cuda` o `cpu`).
+5. Ajustar parámetros (`factor`, `patch`, `pad`, `batch`) si hace falta.
+6. Ejecutar el proceso y revisar el progreso en tiempo real.
+7. El resultado se guarda en `output_10bands_SR/`.
 
 ## Parámetros principales
 
@@ -72,6 +79,7 @@ Abrir en el navegador: [http://127.0.0.1:8010](http://127.0.0.1:8010)
 | `pad` | `4` | Padding para evitar bordes entre tiles |
 | `batch` | `7` | Cantidad de tiles por batch |
 | `device` | `auto` | Selección de cómputo (`auto`/`cuda`/`cpu`) |
+| `weights_dir` | `./ldsr-s2` | Selección de modelo (desde el toggle de UI) |
 
 ## Estructura
 
@@ -80,9 +88,10 @@ LR_to_SR_S2/
 ├── app.py                    # API FastAPI + motor de inferencia
 ├── static/
 │   └── index.html            # Interfaz web
-├── SEN2SRLite/               # Pesos .safetensor y loader
+├── SEN2SRLite/               # Pesos .safetensor y loader SEN2SRLite
+├── ldsr-s2/                  # Loader/pesos LDSR-S2
 ├── sen2sr/                   # Módulos/modelos auxiliares
-├── input_10bands_LR/         # Inputs GeoTIFF (10 bandas)
+├── input_10bands_LR/         # Inputs GeoTIFF
 ├── output_10bands_SR/        # Outputs GeoTIFF super-resueltos
 └── requirements.txt          # Dependencias
 ```
