@@ -1,4 +1,4 @@
-# Low-Res to High-Res Sentinel-2 (Linux / WSL2)
+﻿# Low-Res to High-Res Sentinel-2 (Linux / WSL2)
 
 Herramienta web para mejorar la resolucion espacial de imagenes satelitales Sentinel-2 de Low-Res (10m) a Super-Res (2.5m).
 
@@ -6,7 +6,6 @@ Herramienta web para mejorar la resolucion espacial de imagenes satelitales Sent
 
 - `./SEN2SRLite`: pipeline de 10 bandas (B02, B03, B04, B05, B06, B07, B08, B8A, B11, B12).
 - `./ldsr-s2`: pipeline RGB+NIR (B04, B03, B02, B08), salida de 4 bandas.
-- En la UI se elige desde el toggle de **Weights Directory**.
 
 ## Entrada y salida
 
