@@ -1,0 +1,14 @@
+.git
+.gitignore
+.venv
+.vscode
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+*.log
+
+input_10bands_LR/*
+output_10bands_SR/*
+
+ldsr-s2/opensr-ldsrs2_v1_0_0.ckpt

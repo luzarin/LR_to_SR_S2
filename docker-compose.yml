@@ -1,0 +1,20 @@
+name: lr_to_sr_s2
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        TORCH_INDEX_URL: https://download.pytorch.org/whl/cpu
+    container_name: lr_to_sr_s2
+    ports:
+      - "8010:8010"
+    environment:
+      - PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
+    volumes:
+      - ./input_10bands_LR:/app/input_10bands_LR
+      - ./output_10bands_SR:/app/output_10bands_SR
+      - ./SEN2SRLite:/app/SEN2SRLite
+      - ./ldsr-s2:/app/ldsr-s2
+    restart: unless-stopped
